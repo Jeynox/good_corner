@@ -1,0 +1,27 @@
+.card {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    border: solid 1px black;
+    transition: all .3s ease-in-out;
+}
+
+.card:hover, .card:focus {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+}
+
+.card a {
+    display: grid;
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.card__text {
+    display: grid;
+    gap: .5rem;
+    padding: 1rem;
+}
