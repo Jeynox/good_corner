@@ -5,7 +5,8 @@ WORKDIR /app
 COPY package.json  package.json
 RUN npm install
 
-COPY public public
 COPY src src
+COPY index.html index.html
+COPY tsconfig.json tsconfig.json
 
 CMD npm start
