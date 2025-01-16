@@ -1,13 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client'; // Utilisation de React 18 avec la nouvelle API "createRoot"
-import App from './App'; // Composant principal de l'application
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { BrowserRouter } from 'react-router-dom';
 
-const rootElement = document.getElementById('root') as HTMLElement; // Récupère l'élément HTML avec id "root"
+const client = new ApolloClient({
+  uri: 'http://localhost:4000/',
+  cache: new InMemoryCache(),
+});
 
-const root = ReactDOM.createRoot(rootElement); // Crée un "root" React
-
-root.render(
-  <React.StrictMode>
-    <App />  {/* Rendu du composant App */}
-  </React.StrictMode>
+createRoot(document.getElementById('root')!).render(
+  <ApolloProvider client={client}>
+    <StrictMode>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </StrictMode>
+  </ApolloProvider>
 );

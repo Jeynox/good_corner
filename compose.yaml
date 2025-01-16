@@ -1,17 +1,49 @@
 services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: example
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d postgres -U postgres"]
+      interval: 1s
+      timeout: 2s
+      retries: 100
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      db:
+        condition: service_healthy
+
   backend:
     build: ./backend
+    volumes:
+      - ./backend/src:/app/src
     ports:
-      - "5000:5050"
-    command: npm start
-    volumes: 
-      - ./backend:/src/:/app/src/
-      
+      - "4000:4000"
+    healthcheck:
+      test: 'curl --fail --request POST --header ''content-type: application/json'' --url ''http://localhost:4000'' --data ''{"query":"query { __typename }"}'' || exit 1'
+      interval: 1s
+      timeout: 2s
+      retries: 100
+    depends_on:
+      db:
+        condition: service_healthy
+
   frontend:
-    build: ./frontend
-    ports:
-      - "5173:8080"
-    command: npm start
-    volumes: 
-      - ./frontend:/src/:/app/src/
-    
+      build: ./frontend
+      volumes:
+        - ./frontend/src:/app/src
+      ports:
+        - "5173:5173"
+      depends_on:
+        backend:
+          condition: service_healthy
+      healthcheck:
+        test: "curl --fail --request GET --url 'http://localhost:5173' || exit 1"
+        interval: 1s
+        timeout: 2s
+        retries: 100
